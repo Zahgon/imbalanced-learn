@@ -210,19 +210,7 @@ class EasyEnsembleClassifier(BaggingClassifier):
         self.replacement = replacement
 
     def _validate_y(self, y):
-        y_encoded = super()._validate_y(y)
-        if isinstance(self.sampling_strategy, dict):
-            self._sampling_strategy = {
-                np.where(self.classes_ == key)[0][0]: value
-                for key, value in check_sampling_strategy(
-                    self.sampling_strategy,
-                    y,
-                    "under-sampling",
-                ).items()
-            }
-        else:
-            self._sampling_strategy = self.sampling_strategy
-        return y_encoded
+        pass
 
     def _validate_estimator(self, default=None):
         """Check the estimator and the n_estimator attribute, set the
@@ -272,10 +260,7 @@ class EasyEnsembleClassifier(BaggingClassifier):
     @property
     def base_estimator_(self):
         """Attribute for older sklearn version compatibility."""
-        error = AttributeError(
-            f"{self.__class__.__name__} object has no attribute 'base_estimator_'."
-        )
-        raise error
+        pass
 
     def _get_estimator(self):
         if self.estimator is None:
@@ -286,7 +271,7 @@ class EasyEnsembleClassifier(BaggingClassifier):
         return self.estimator
 
     def _more_tags(self):
-        return {"allow_nan": get_tags(self._get_estimator()).input_tags.allow_nan}
+        pass
 
     def __sklearn_tags__(self):
         tags = super().__sklearn_tags__()

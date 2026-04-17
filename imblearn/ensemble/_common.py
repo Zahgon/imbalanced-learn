@@ -15,14 +15,7 @@ def _estimator_has(attr):
     First, we check the first fitted estimator if available, otherwise we
     check the estimator attribute.
     """
-
-    def check(self):
-        if hasattr(self, "estimators_"):
-            return hasattr(self.estimators_[0], attr)
-        else:  # self.estimator is not None
-            return hasattr(self.estimator, attr)
-
-    return check
+    pass
 
 
 _bagging_parameter_constraints = {

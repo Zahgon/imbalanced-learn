@@ -118,4 +118,4 @@ class InstanceHardnessCV(BaseCrossValidator):
         n_splits: int
             Returns the number of splitting iterations in the cross-validator.
         """
-        return self.n_splits
+        pass

@@ -250,14 +250,7 @@ class RandomOverSampler(BaseOverSampler):
         return X_resampled, y_resampled
 
     def _more_tags(self):
-        return {
-            "X_types": ["2darray", "string", "sparse", "dataframe"],
-            "sample_indices": True,
-            "allow_nan": True,
-            "_xfail_checks": {
-                "check_complex_data": "Robust to this type of data.",
-            },
-        }
+        pass
 
     def __sklearn_tags__(self):
         tags = super().__sklearn_tags__()

@@ -750,7 +750,7 @@ class SMOTENC(SMOTE):
         return X_new
 
     def _more_tags(self):
-        return {"X_types": ["2darray", "dataframe", "string"]}
+        pass
 
     def __sklearn_tags__(self):
         tags = super().__sklearn_tags__()
@@ -979,7 +979,7 @@ class SMOTEN(SMOTE):
             return X_resampled, y_resampled
 
     def _more_tags(self):
-        return {"X_types": ["2darray", "dataframe", "string"]}
+        pass
 
     def __sklearn_tags__(self):
         tags = super().__sklearn_tags__()

@@ -232,9 +232,7 @@ class ValueDifferenceMetric(BaseEstimator):
         return distance
 
     def _more_tags(self):
-        return {
-            "requires_positive_X": True,  # X should be encoded with OrdinalEncoder
-        }
+        pass
 
     def __sklearn_tags__(self):
         tags = super().__sklearn_tags__()

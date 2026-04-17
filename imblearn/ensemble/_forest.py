@@ -57,32 +57,7 @@ def _local_parallel_build_trees(
     missing_values_in_feature_mask=None,
 ):
     # resample before to fit the tree
-    X_resampled, y_resampled = sampler.fit_resample(X, y)
-    if sample_weight is not None:
-        sample_weight = _safe_indexing(sample_weight, sampler.sample_indices_)
-    if _get_n_samples_bootstrap is not None:
-        n_samples_bootstrap = min(n_samples_bootstrap, X_resampled.shape[0])
-
-    params_parallel_build_trees = {
-        "tree": tree,
-        "X": X_resampled,
-        "y": y_resampled,
-        "sample_weight": sample_weight,
-        "tree_idx": tree_idx,
-        "n_trees": n_trees,
-        "verbose": verbose,
-        "class_weight": class_weight,
-        "n_samples_bootstrap": n_samples_bootstrap,
-        "bootstrap": bootstrap,
-    }
-
-    params_parallel_build_trees["missing_values_in_feature_mask"] = (
-        missing_values_in_feature_mask
-    )
-
-    tree = _parallel_build_trees(**params_parallel_build_trees)
-
-    return sampler, tree
+    pass
 
 
 @Substitution(
@@ -838,7 +813,7 @@ class BalancedRandomForestClassifier(RandomForestClassifier):
         return oob_pred
 
     def _more_tags(self):
-        return {"multioutput": False, "multilabel": False}
+        pass
 
     def __sklearn_tags__(self):
         tags = super().__sklearn_tags__()

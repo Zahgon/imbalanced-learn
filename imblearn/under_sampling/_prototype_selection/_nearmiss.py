@@ -307,13 +307,7 @@ class NearMiss(BaseUnderSampler):
 
     # fmt: off
     def _more_tags(self):
-        return {
-            "sample_indices": True,
-            "_xfail_checks": {
-                "check_samplers_fit_resample":
-                "Fails for NearMiss-3 with less samples than expected"
-            }
-        }
+        pass
     # fmt: on
 
     def __sklearn_tags__(self):

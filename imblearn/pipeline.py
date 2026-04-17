@@ -523,11 +523,7 @@ class Pipeline(pipeline.Pipeline):
         return self
 
     def _can_fit_transform(self):
-        return (
-            self._final_estimator == "passthrough"
-            or hasattr(self._final_estimator, "transform")
-            or hasattr(self._final_estimator, "fit_transform")
-        )
+        pass
 
     @available_if(_can_fit_transform)
     @_fit_context(
@@ -663,9 +659,7 @@ class Pipeline(pipeline.Pipeline):
             )
 
     def _can_fit_resample(self):
-        return self._final_estimator == "passthrough" or hasattr(
-            self._final_estimator, "fit_resample"
-        )
+        pass
 
     @available_if(_can_fit_resample)
     @_fit_context(
@@ -839,22 +833,7 @@ class Pipeline(pipeline.Pipeline):
         y_proba : ndarray of shape (n_samples, n_classes)
             Result of calling `predict_proba` on the final estimator.
         """
-        # TODO(0.15): Remove the context manager and use check_is_fitted(self)
-        with _raise_or_warn_if_not_fitted(self):
-            Xt = X
-
-            if not _routing_enabled():
-                for _, name, transform in self._iter(with_final=False):
-                    Xt = transform.transform(Xt)
-                return self.steps[-1][1].predict_proba(Xt, **params)
-
-            # metadata routing enabled
-            routed_params = process_routing(self, "predict_proba", **params)
-            for _, name, transform in self._iter(with_final=False):
-                Xt = transform.transform(Xt, **routed_params[name].transform)
-            return self.steps[-1][1].predict_proba(
-                Xt, **routed_params[self.steps[-1][0]].predict_proba
-            )
+        pass
 
     @available_if(pipeline._final_estimator_has("decision_function"))
     def decision_function(self, X, **params):
@@ -886,23 +865,7 @@ class Pipeline(pipeline.Pipeline):
         y_score : ndarray of shape (n_samples, n_classes)
             Result of calling `decision_function` on the final estimator.
         """
-        # TODO(0.15): Remove the context manager and use check_is_fitted(self)
-        with _raise_or_warn_if_not_fitted(self):
-            _raise_for_params(params, self, "decision_function")
-
-            # not branching here since params is only available if
-            # enable_metadata_routing=True
-            routed_params = process_routing(self, "decision_function", **params)
-
-            Xt = X
-            for _, name, transform in self._iter(with_final=False):
-                Xt = transform.transform(
-                    Xt, **routed_params.get(name, {}).get("transform", {})
-                )
-            return self.steps[-1][1].decision_function(
-                Xt,
-                **routed_params.get(self.steps[-1][0], {}).get("decision_function", {}),
-            )
+        pass
 
     @available_if(pipeline._final_estimator_has("score_samples"))
     def score_samples(self, X):
@@ -924,12 +887,7 @@ class Pipeline(pipeline.Pipeline):
         y_score : ndarray of shape (n_samples,)
             Result of calling `score_samples` on the final estimator.
         """
-        # TODO(0.15): Remove the context manager and use check_is_fitted(self)
-        with _raise_or_warn_if_not_fitted(self):
-            Xt = X
-            for _, _, transformer in self._iter(with_final=False):
-                Xt = transformer.transform(Xt)
-            return self.steps[-1][1].score_samples(Xt)
+        pass
 
     @available_if(pipeline._final_estimator_has("predict_log_proba"))
     def predict_log_proba(self, X, **params):
@@ -973,27 +931,10 @@ class Pipeline(pipeline.Pipeline):
         y_log_proba : ndarray of shape (n_samples, n_classes)
             Result of calling `predict_log_proba` on the final estimator.
         """
-        # TODO(0.15): Remove the context manager and use check_is_fitted(self)
-        with _raise_or_warn_if_not_fitted(self):
-            Xt = X
-
-            if not _routing_enabled():
-                for _, name, transform in self._iter(with_final=False):
-                    Xt = transform.transform(Xt)
-                return self.steps[-1][1].predict_log_proba(Xt, **params)
-
-            # metadata routing enabled
-            routed_params = process_routing(self, "predict_log_proba", **params)
-            for _, name, transform in self._iter(with_final=False):
-                Xt = transform.transform(Xt, **routed_params[name].transform)
-            return self.steps[-1][1].predict_log_proba(
-                Xt, **routed_params[self.steps[-1][0]].predict_log_proba
-            )
+        pass
 
     def _can_transform(self):
-        return self._final_estimator == "passthrough" or hasattr(
-            self._final_estimator, "transform"
-        )
+        pass
 
     @available_if(_can_transform)
     def transform(self, X, **params):
@@ -1041,7 +982,7 @@ class Pipeline(pipeline.Pipeline):
             return Xt
 
     def _can_inverse_transform(self):
-        return all(hasattr(t, "inverse_transform") for _, _, t in self._iter())
+        pass
 
     @available_if(_can_inverse_transform)
     def inverse_transform(self, Xt, **params):
@@ -1124,28 +1065,7 @@ class Pipeline(pipeline.Pipeline):
         score : float
             Result of calling `score` on the final estimator.
         """
-        # TODO(0.15): Remove the context manager and use check_is_fitted(self)
-        with _raise_or_warn_if_not_fitted(self):
-            Xt = X
-            if not _routing_enabled():
-                for _, name, transform in self._iter(with_final=False):
-                    Xt = transform.transform(Xt)
-                score_params = {}
-                if sample_weight is not None:
-                    score_params["sample_weight"] = sample_weight
-                return self.steps[-1][1].score(Xt, y, **score_params)
-
-            # metadata routing is enabled.
-            routed_params = process_routing(
-                self, "score", sample_weight=sample_weight, **params
-            )
-
-            Xt = X
-            for _, name, transform in self._iter(with_final=False):
-                Xt = transform.transform(Xt, **routed_params[name].transform)
-            return self.steps[-1][1].score(
-                Xt, y, **routed_params[self.steps[-1][0]].score
-            )
+        pass
 
     # TODO: once scikit-learn >= 1.4, the following function should be simplified by
     # calling `super().get_metadata_routing()`
@@ -1161,80 +1081,7 @@ class Pipeline(pipeline.Pipeline):
             A :class:`~utils.metadata_routing.MetadataRouter` encapsulating
             routing information.
         """
-        router = MetadataRouter(owner=self.__class__.__name__)
-
-        # first we add all steps except the last one
-        for _, name, trans in self._iter(
-            with_final=False, filter_passthrough=True, filter_resample=False
-        ):
-            method_mapping = MethodMapping()
-            # fit, fit_predict, and fit_transform call fit_transform if it
-            # exists, or else fit and transform
-            if hasattr(trans, "fit_transform"):
-                (
-                    method_mapping.add(caller="fit", callee="fit_transform")
-                    .add(caller="fit_transform", callee="fit_transform")
-                    .add(caller="fit_predict", callee="fit_transform")
-                )
-            else:
-                (
-                    method_mapping.add(caller="fit", callee="fit")
-                    .add(caller="fit", callee="transform")
-                    .add(caller="fit_transform", callee="fit")
-                    .add(caller="fit_transform", callee="transform")
-                    .add(caller="fit_predict", callee="fit")
-                    .add(caller="fit_predict", callee="transform")
-                )
-
-            (
-                # handling sampler if the fit_* stage
-                method_mapping.add(caller="fit", callee="fit_resample")
-                .add(caller="fit_transform", callee="fit_resample")
-                .add(caller="fit_predict", callee="fit_resample")
-            )
-            (
-                method_mapping.add(caller="predict", callee="transform")
-                .add(caller="predict", callee="transform")
-                .add(caller="predict_proba", callee="transform")
-                .add(caller="decision_function", callee="transform")
-                .add(caller="predict_log_proba", callee="transform")
-                .add(caller="transform", callee="transform")
-                .add(caller="inverse_transform", callee="inverse_transform")
-                .add(caller="score", callee="transform")
-                .add(caller="fit_resample", callee="transform")
-            )
-
-            router.add(method_mapping=method_mapping, **{name: trans})
-
-        final_name, final_est = self.steps[-1]
-        if final_est is None or final_est == "passthrough":
-            return router
-
-        # then we add the last step
-        method_mapping = MethodMapping()
-        if hasattr(final_est, "fit_transform"):
-            method_mapping.add(caller="fit_transform", callee="fit_transform")
-        else:
-            (
-                method_mapping.add(caller="fit", callee="fit").add(
-                    caller="fit", callee="transform"
-                )
-            )
-        (
-            method_mapping.add(caller="fit", callee="fit")
-            .add(caller="predict", callee="predict")
-            .add(caller="fit_predict", callee="fit_predict")
-            .add(caller="predict_proba", callee="predict_proba")
-            .add(caller="decision_function", callee="decision_function")
-            .add(caller="predict_log_proba", callee="predict_log_proba")
-            .add(caller="transform", callee="transform")
-            .add(caller="inverse_transform", callee="inverse_transform")
-            .add(caller="score", callee="score")
-            .add(caller="fit_resample", callee="fit_resample")
-        )
-
-        router.add(method_mapping=method_mapping, **{final_name: final_est})
-        return router
+        pass
 
     def _check_method_params(self, method, props, **kwargs):
         if _routing_enabled():
@@ -1328,10 +1175,7 @@ class Pipeline(pipeline.Pipeline):
 
 
 def _fit_resample_one(sampler, X, y, message_clsname="", message=None, params=None):
-    with _print_elapsed_time(message_clsname, message):
-        X_res, y_res = sampler.fit_resample(X, y, **params.get("fit_resample", {}))
-
-        return X_res, y_res, sampler
+    pass
 
 
 def _transform_one(transformer, X, y, weight, params=None):
@@ -1356,11 +1200,7 @@ def _transform_one(transformer, X, y, weight, params=None):
 
         This should be of the form ``process_routing()["step_name"]``.
     """
-    res = transformer.transform(X, **params.transform)
-    # if we have a weight for this transformer, multiply output
-    if weight is None:
-        return res
-    return res * weight
+    pass
 
 
 def _fit_transform_one(
@@ -1373,18 +1213,7 @@ def _fit_transform_one(
 
     ``params`` needs to be of the form ``process_routing()["step_name"]``.
     """
-    params = params or {}
-    with _print_elapsed_time(message_clsname, message):
-        if hasattr(transformer, "fit_transform"):
-            res = transformer.fit_transform(X, y, **params.get("fit_transform", {}))
-        else:
-            res = transformer.fit(X, y, **params.get("fit", {})).transform(
-                X, **params.get("transform", {})
-            )
-
-    if weight is None:
-        return res, transformer
-    return res * weight, transformer
+    pass
 
 
 @validate_params(

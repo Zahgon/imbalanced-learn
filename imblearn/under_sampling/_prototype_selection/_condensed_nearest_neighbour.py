@@ -239,7 +239,7 @@ CondensedNearestNeighbour  # doctest: +SKIP
         return _safe_indexing(X, idx_under), _safe_indexing(y, idx_under)
 
     def _more_tags(self):
-        return {"sample_indices": True}
+        pass
 
     def __sklearn_tags__(self):
         tags = super().__sklearn_tags__()

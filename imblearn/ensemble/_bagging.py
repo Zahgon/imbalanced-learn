@@ -272,22 +272,7 @@ class BalancedBaggingClassifier(BaggingClassifier):
         self.sampler = sampler
 
     def _validate_y(self, y):
-        y_encoded = super()._validate_y(y)
-        if (
-            isinstance(self.sampling_strategy, dict)
-            and self.sampler_._sampling_type != "bypass"
-        ):
-            self._sampling_strategy = {
-                np.where(self.classes_ == key)[0][0]: value
-                for key, value in check_sampling_strategy(
-                    self.sampling_strategy,
-                    y,
-                    self.sampler_._sampling_type,
-                ).items()
-            }
-        else:
-            self._sampling_strategy = self.sampling_strategy
-        return y_encoded
+        pass
 
     def _validate_estimator(self, default=DecisionTreeClassifier()):
         """Check the estimator and the n_estimator attribute, set the
@@ -345,21 +330,10 @@ class BalancedBaggingClassifier(BaggingClassifier):
     @property
     def base_estimator_(self):
         """Attribute for older sklearn version compatibility."""
-        error = AttributeError(
-            f"{self.__class__.__name__} object has no attribute 'base_estimator_'."
-        )
-        raise error
+        pass
 
     def _more_tags(self):
-        tags = super()._more_tags()
-        tags_key = "_xfail_checks"
-        failing_test = "check_estimators_nan_inf"
-        reason = "Fails because the sampler removed infinity and NaN values"
-        if tags_key in tags:
-            tags[tags_key][failing_test] = reason
-        else:
-            tags[tags_key] = {failing_test: reason}
-        return tags
+        pass
 
     def __sklearn_tags__(self):
         tags = super().__sklearn_tags__()

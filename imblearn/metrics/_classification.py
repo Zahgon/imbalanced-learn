@@ -791,56 +791,7 @@ def make_index_balanced_accuracy(*, alpha=0.1, squared=True):
     """
 
     def decorate(scoring_func):
-        @functools.wraps(scoring_func)
-        def compute_score(*args, **kwargs):
-            signature_scoring_func = signature(scoring_func)
-            params_scoring_func = set(signature_scoring_func.parameters.keys())
-
-            # check that the scoring function does not need a score
-            # and only a prediction
-            prohibitied_y_pred = set(["y_score", "y_prob", "y2"])
-            if prohibitied_y_pred.intersection(params_scoring_func):
-                raise AttributeError(
-                    f"The function {scoring_func.__name__} has an unsupported"
-                    " attribute. Metric with`y_pred` are the"
-                    " only supported metrics is the only"
-                    " supported."
-                )
-
-            args_scoring_func = signature_scoring_func.bind(*args, **kwargs)
-            args_scoring_func.apply_defaults()
-            _score = scoring_func(*args_scoring_func.args, **args_scoring_func.kwargs)
-            if squared:
-                _score = np.power(_score, 2)
-
-            signature_sens_spec = signature(sensitivity_specificity_support)
-            params_sens_spec = set(signature_sens_spec.parameters.keys())
-            common_params = params_sens_spec.intersection(
-                set(args_scoring_func.arguments.keys())
-            )
-
-            args_sens_spec = {k: args_scoring_func.arguments[k] for k in common_params}
-
-            if scoring_func.__name__ == "geometric_mean_score":
-                if "average" in args_sens_spec:
-                    if args_sens_spec["average"] == "multiclass":
-                        args_sens_spec["average"] = "macro"
-            elif (
-                scoring_func.__name__ == "accuracy_score"
-                or scoring_func.__name__ == "jaccard_score"
-            ):
-                # We do not support multilabel so the only average supported
-                # is binary
-                args_sens_spec["average"] = "binary"
-
-            sensitivity, specificity, _ = sensitivity_specificity_support(
-                **args_sens_spec
-            )
-
-            dominance = sensitivity - specificity
-            return (1.0 + alpha * dominance) * _score
-
-        return compute_score
+        pass
 
     return decorate
 

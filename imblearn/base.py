@@ -204,7 +204,7 @@ class BaseSampler(SamplerMixin, OneToOneFeatureMixin, BaseEstimator):
         return super().fit_resample(X, y, **params)
 
     def _more_tags(self):
-        return {"X_types": ["2darray", "sparse", "dataframe"]}
+        pass
 
     def __sklearn_tags__(self):
         from sklearn_compat.utils._tags import TargetTags
@@ -227,7 +227,7 @@ class BaseSampler(SamplerMixin, OneToOneFeatureMixin, BaseEstimator):
 
 
 def _identity(X, y):
-    return X, y
+    pass
 
 
 def is_sampler(estimator):

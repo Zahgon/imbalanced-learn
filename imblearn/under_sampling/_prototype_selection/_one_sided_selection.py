@@ -205,7 +205,7 @@ class OneSidedSelection(BaseCleaningSampler):
         return X_cleaned, y_cleaned
 
     def _more_tags(self):
-        return {"sample_indices": True}
+        pass
 
     def __sklearn_tags__(self):
         tags = super().__sklearn_tags__()
